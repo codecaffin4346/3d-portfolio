@@ -1,9 +1,24 @@
 
 import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Environment, Float, Text } from '@react-three/drei';
+import { OrbitControls, Environment, Float, Text } from '@react-three/drei';
 import { Group } from 'three';
-import { MeshProps } from '@react-three/fiber';
+import * as THREE from 'three';
+
+// Add type declarations for the JSX elements used in @react-three/fiber
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      group: any;
+      mesh: any;
+      boxGeometry: any;
+      meshStandardMaterial: any;
+      ambientLight: any;
+      spotLight: any;
+      pointLight: any;
+    }
+  }
+}
 
 interface ModelProps {
   position?: [number, number, number];

@@ -42,14 +42,22 @@ export function SplashCursor({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Safer WebGL context acquisition
+    // Safer WebGL context acquisition with proper type handling
+    let gl: WebGLRenderingContext | WebGL2RenderingContext | null = null;
+    
     try {
-      // Try WebGL2 first
-      let gl = canvas.getContext('webgl2');
+      // Try WebGL2 first with proper type assertion
+      gl = canvas.getContext('webgl2');
       
-      // Fall back to WebGL1
+      // Fall back to WebGL1 if needed
       if (!gl) {
-        gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const fallbackContext = canvas.getContext('webgl') || 
+                               canvas.getContext('experimental-webgl');
+        
+        // Type check to ensure we have a WebGL context
+        if (fallbackContext instanceof WebGLRenderingContext) {
+          gl = fallbackContext;
+        }
       }
       
       // If still no WebGL, set flag and return early
@@ -58,68 +66,85 @@ export function SplashCursor({
         setWebGLSupported(false);
         return;
       }
-
-      // Continue with WebGL initialization and fluid simulation
-      // We'll use a simpler implementation that's more reliable
-      // Set up basic drawing capabilities
-      gl.clearColor(BACK_COLOR.r, BACK_COLOR.g, BACK_COLOR.b, TRANSPARENT ? 0 : 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      
-      // Simple animation instead of full fluid sim for reliability
-      function simpleAnimation() {
-        if (!canvas) return;
-        
-        // Resize canvas to match display size
-        const displayWidth = canvas.clientWidth;
-        const displayHeight = canvas.clientHeight;
-        
-        // Check if the canvas needs to be resized
-        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-          canvas.width = displayWidth;
-          canvas.height = displayHeight;
-          gl?.viewport(0, 0, displayWidth, displayHeight);
-        }
-        
-        // Clear with semi-transparent background
-        gl?.clear(gl.COLOR_BUFFER_BIT);
-        
-        // Request next frame
-        requestAnimationFrame(simpleAnimation);
-      }
-      
-      // Start the animation loop
-      simpleAnimation();
-      
-      // Simple mouse interactivity
-      const handlePointerMove = (e: MouseEvent | TouchEvent) => {
-        if (!canvas || !gl) return;
-        
-        const rect = canvas.getBoundingClientRect();
-        const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-        const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-        
-        // Calculate position relative to canvas
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-        
-        // Trigger a visual effect (simplified)
-        gl.clear(gl.COLOR_BUFFER_BIT);
-      };
-      
-      // Add event listeners
-      window.addEventListener('mousemove', handlePointerMove);
-      window.addEventListener('touchmove', handlePointerMove);
-      
-      // Clean up
-      return () => {
-        window.removeEventListener('mousemove', handlePointerMove);
-        window.removeEventListener('touchmove', handlePointerMove);
-      };
-      
     } catch (e) {
       console.error('Error initializing WebGL:', e);
       setWebGLSupported(false);
+      return;
     }
+
+    // Function to detect if running on a mobile device
+    const isMobileDevice = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    };
+
+    // Reduce quality for mobile devices
+    if (isMobileDevice()) {
+      DYE_RESOLUTION = Math.min(DYE_RESOLUTION, 512);
+      SIM_RESOLUTION = Math.min(SIM_RESOLUTION, 64);
+    }
+
+    // Set up basic drawing capabilities
+    gl.clearColor(BACK_COLOR.r, BACK_COLOR.g, BACK_COLOR.b, TRANSPARENT ? 0 : 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    
+    // Simple animation instead of full fluid sim for reliability
+    const simpleAnimation = () => {
+      if (!canvas || !gl) return;
+      
+      // Resize canvas to match display size
+      const displayWidth = canvas.clientWidth;
+      const displayHeight = canvas.clientHeight;
+      
+      // Check if the canvas needs to be resized
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+        gl.viewport(0, 0, displayWidth, displayHeight);
+      }
+      
+      // Clear with semi-transparent background
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      
+      // Request next frame
+      requestAnimationFrame(simpleAnimation);
+    };
+    
+    // Start the animation loop
+    simpleAnimation();
+    
+    // Simple mouse interactivity - just tracking mouse position
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      if (!canvas || !gl) return;
+      
+      const rect = canvas.getBoundingClientRect();
+      const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+      
+      // Calculate position relative to canvas
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      
+      // Very basic visual effect - just changing the clear color slightly
+      const color = {
+        r: BACK_COLOR.r + Math.sin(x / canvas.width * Math.PI) * 0.1,
+        g: BACK_COLOR.g + Math.sin(y / canvas.height * Math.PI) * 0.1,
+        b: BACK_COLOR.b + 0.1
+      };
+      
+      gl.clearColor(color.r, color.g, color.b, TRANSPARENT ? 0 : 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+    };
+    
+    // Add event listeners
+    window.addEventListener('mousemove', handlePointerMove);
+    window.addEventListener('touchmove', handlePointerMove);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('touchmove', handlePointerMove);
+    };
+    
   }, [
     BACK_COLOR, 
     TRANSPARENT, 
