@@ -1,79 +1,71 @@
 
-import { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment, Float, Text } from '@react-three/drei';
-import { Group } from 'three';
-import * as THREE from 'three';
-
-// Add type declarations for the JSX elements used in @react-three/fiber
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      group: any;
-      mesh: any;
-      boxGeometry: any;
-      meshStandardMaterial: any;
-      ambientLight: any;
-      spotLight: any;
-      pointLight: any;
-    }
-  }
-}
-
-interface ModelProps {
-  position?: [number, number, number];
-  rotation?: [number, number, number];
-}
-
-function Model({ position = [0, 0, 0], rotation = [0, 0, 0] }: ModelProps) {
-  const group = useRef<Group>(null);
-  
-  // Animation for the model
-  useFrame((state) => {
-    if (!group.current) return;
-    const t = state.clock.getElapsedTime();
-    group.current.rotation.y = Math.sin(t / 4) / 8;
-    group.current.position.y = Math.sin(t / 1.5) / 10;
-  });
-
-  // Simple cube mesh as a placeholder
-  return (
-    <group ref={group} position={position} rotation={rotation}>
-      <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.5}>
-        <mesh castShadow receiveShadow>
-          <boxGeometry args={[2, 2, 2]} />
-          <meshStandardMaterial color="#9b87f5" roughness={0.2} metalness={0.8} />
-        </mesh>
-      </Float>
-    </group>
-  );
-}
+import { useEffect, useRef } from 'react';
 
 export function ThreeDScene() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Basic animation to simulate 3D movement
+    const container = containerRef.current;
+    if (!container) return;
+    
+    const cube = document.createElement('div');
+    cube.className = 'cube';
+    cube.style.width = '100px';
+    cube.style.height = '100px';
+    cube.style.backgroundColor = '#9b87f5';
+    cube.style.position = 'absolute';
+    cube.style.top = '50%';
+    cube.style.left = '50%';
+    cube.style.transform = 'translate(-50%, -50%)';
+    cube.style.transition = 'transform 0.3s ease';
+    cube.style.boxShadow = '0 0 15px rgba(155, 135, 245, 0.6)';
+    cube.style.borderRadius = '10px';
+    
+    const text = document.createElement('div');
+    text.textContent = 'PORTFOLIO';
+    text.style.position = 'absolute';
+    text.style.color = '#9b87f5';
+    text.style.fontSize = '24px';
+    text.style.fontWeight = 'bold';
+    text.style.top = '15%';
+    text.style.left = '50%';
+    text.style.transform = 'translateX(-50%)';
+    
+    container.appendChild(cube);
+    container.appendChild(text);
+    
+    // Floating animation
+    let position = 0;
+    let direction = 1;
+    
+    const animate = () => {
+      position += 0.01 * direction;
+      
+      if (position > 1) direction = -1;
+      if (position < -1) direction = 1;
+      
+      cube.style.transform = `translate(-50%, calc(-50% + ${position * 10}px)) rotate(${position * 5}deg)`;
+      text.style.transform = `translateX(-50%) translateY(${position * 3}px)`;
+      
+      requestAnimationFrame(animate);
+    };
+    
+    const animationId = requestAnimationFrame(animate);
+    
+    // Clean up
+    return () => {
+      cancelAnimationFrame(animationId);
+      if (container.contains(cube)) container.removeChild(cube);
+      if (container.contains(text)) container.removeChild(text);
+    };
+  }, []);
+  
   return (
-    <Canvas shadows camera={{ position: [0, 0, 10], fov: 50 }}>
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} castShadow />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} />
-      
-      <Model position={[0, -1, 0]} />
-      
-      <Environment preset="city" />
-      <OrbitControls enableZoom={false} enablePan={false} minPolarAngle={Math.PI / 3} maxPolarAngle={Math.PI / 1.5} />
-      
-      {/* 3D Text */}
-      <Float speed={1} rotationIntensity={0.2} floatIntensity={0.2}>
-        <Text
-          font="/fonts/Inter-Bold.woff"
-          position={[0, 2, 0]}
-          fontSize={0.75}
-          color="#9b87f5"
-          anchorX="center"
-          anchorY="middle"
-        >
-          PORTFOLIO
-        </Text>
-      </Float>
-    </Canvas>
+    <div 
+      ref={containerRef} 
+      className="relative w-full h-full bg-transparent"
+      style={{ perspective: '800px' }}
+    />
   );
 }
