@@ -1,9 +1,54 @@
-
 "use client";
 import { useEffect, useRef } from "react";
 
+// Define interfaces for our custom classes
+interface CustomMaterial {
+  vertexShader: any;
+  fragmentShaderSource: string;
+  programs: any[];
+  activeProgram: any;
+  uniforms: any[];
+  setKeywords: (keywords: string[]) => void;
+  bind: () => void;
+}
+
+interface CustomProgram {
+  uniforms: Record<string, any>;
+  program: any;
+  bind: () => void;
+}
+
+interface PointerPrototype {
+  id: number;
+  texcoordX: number;
+  texcoordY: number;
+  prevTexcoordX: number;
+  prevTexcoordY: number;
+  deltaX: number;
+  deltaY: number;
+  down: boolean;
+  moved: boolean;
+  color: { r: number; g: number; b: number };
+}
+
+interface SplashCursorProps {
+  SIM_RESOLUTION?: number;
+  DYE_RESOLUTION?: number;
+  CAPTURE_RESOLUTION?: number;
+  DENSITY_DISSIPATION?: number;
+  VELOCITY_DISSIPATION?: number;
+  PRESSURE?: number;
+  PRESSURE_ITERATIONS?: number;
+  CURL?: number;
+  SPLAT_RADIUS?: number;
+  SPLAT_FORCE?: number;
+  SHADING?: boolean;
+  COLOR_UPDATE_SPEED?: number;
+  BACK_COLOR?: { r: number; g: number; b: number };
+  TRANSPARENT?: boolean;
+}
+
 function SplashCursor({
-  // Add whatever props you like for customization
   SIM_RESOLUTION = 128,
   DYE_RESOLUTION = 1440,
   CAPTURE_RESOLUTION = 512,
@@ -18,24 +63,26 @@ function SplashCursor({
   COLOR_UPDATE_SPEED = 10,
   BACK_COLOR = { r: 0.5, g: 0, b: 0 },
   TRANSPARENT = true,
-}) {
-  const canvasRef = useRef(null);
+}: SplashCursorProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    function pointerPrototype() {
-      this.id = -1;
-      this.texcoordX = 0;
-      this.texcoordY = 0;
-      this.prevTexcoordX = 0;
-      this.prevTexcoordY = 0;
-      this.deltaX = 0;
-      this.deltaY = 0;
-      this.down = false;
-      this.moved = false;
-      this.color = [0, 0, 0];
+    function pointerPrototype(): PointerPrototype {
+      return {
+        id: -1,
+        texcoordX: 0,
+        texcoordY: 0,
+        prevTexcoordX: 0,
+        prevTexcoordY: 0,
+        deltaX: 0,
+        deltaY: 0,
+        down: false,
+        moved: false,
+        color: { r: 0, g: 0, b: 0 }
+      };
     }
 
     let config = {
@@ -56,7 +103,7 @@ function SplashCursor({
       TRANSPARENT,
     };
 
-    let pointers = [new pointerPrototype()];
+    let pointers: PointerPrototype[] = [pointerPrototype()];
 
     const { gl, ext } = getWebGLContext(canvas);
     if (!ext.supportLinearFiltering) {
@@ -64,7 +111,7 @@ function SplashCursor({
       config.SHADING = false;
     }
 
-    function getWebGLContext(canvas) {
+    function getWebGLContext(canvas: HTMLCanvasElement) {
       const params = {
         alpha: true,
         depth: false,
@@ -72,12 +119,13 @@ function SplashCursor({
         antialias: false,
         preserveDrawingBuffer: false,
       };
-      let gl = canvas.getContext("webgl2", params);
+      let gl = canvas.getContext("webgl2", params) as WebGLRenderingContext;
       const isWebGL2 = !!gl;
       if (!isWebGL2)
         gl =
-          canvas.getContext("webgl", params) ||
-          canvas.getContext("experimental-webgl", params);
+          (canvas.getContext("webgl", params) ||
+          canvas.getContext("experimental-webgl", params)) as WebGLRenderingContext;
+      
       let halfFloat;
       let supportLinearFiltering;
       if (isWebGL2) {
@@ -92,7 +140,7 @@ function SplashCursor({
       gl.clearColor(0.0, 0.0, 0.0, 1.0);
       const halfFloatTexType = isWebGL2
         ? gl.HALF_FLOAT
-        : halfFloat && halfFloat.HALF_FLOAT_OES;
+        : halfFloat && (halfFloat as any).HALF_FLOAT_OES;
       let formatRGBA;
       let formatRG;
       let formatR;
@@ -100,12 +148,12 @@ function SplashCursor({
       if (isWebGL2) {
         formatRGBA = getSupportedFormat(
           gl,
-          gl.RGBA16F,
+          (gl as any).RGBA16F,
           gl.RGBA,
           halfFloatTexType
         );
-        formatRG = getSupportedFormat(gl, gl.RG16F, gl.RG, halfFloatTexType);
-        formatR = getSupportedFormat(gl, gl.R16F, gl.RED, halfFloatTexType);
+        formatRG = getSupportedFormat(gl, (gl as any).RG16F, (gl as any).RG, halfFloatTexType);
+        formatR = getSupportedFormat(gl, (gl as any).R16F, gl.RED, halfFloatTexType);
       } else {
         formatRGBA = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
         formatRG = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
@@ -124,13 +172,13 @@ function SplashCursor({
       };
     }
 
-    function getSupportedFormat(gl, internalFormat, format, type) {
+    function getSupportedFormat(gl: WebGLRenderingContext, internalFormat: number, format: number, type: number) {
       if (!supportRenderTextureFormat(gl, internalFormat, format, type)) {
         switch (internalFormat) {
-          case gl.R16F:
-            return getSupportedFormat(gl, gl.RG16F, gl.RG, type);
-          case gl.RG16F:
-            return getSupportedFormat(gl, gl.RGBA16F, gl.RGBA, type);
+          case (gl as any).R16F:
+            return getSupportedFormat(gl, (gl as any).RG16F, (gl as any).RG, type);
+          case (gl as any).RG16F:
+            return getSupportedFormat(gl, (gl as any).RGBA16F, gl.RGBA, type);
           default:
             return null;
         }
@@ -141,7 +189,7 @@ function SplashCursor({
       };
     }
 
-    function supportRenderTextureFormat(gl, internalFormat, format, type) {
+    function supportRenderTextureFormat(gl: WebGLRenderingContext, internalFormat: number, format: number, type: number) {
       const texture = gl.createTexture();
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -173,14 +221,21 @@ function SplashCursor({
     }
 
     class Material {
-      constructor(vertexShader, fragmentShaderSource) {
+      vertexShader: any;
+      fragmentShaderSource: string;
+      programs: any[];
+      activeProgram: any;
+      uniforms: any[];
+
+      constructor(vertexShader: any, fragmentShaderSource: string) {
         this.vertexShader = vertexShader;
         this.fragmentShaderSource = fragmentShaderSource;
         this.programs = [];
         this.activeProgram = null;
         this.uniforms = [];
       }
-      setKeywords(keywords) {
+      
+      setKeywords(keywords: string[]) {
         let hash = 0;
         for (let i = 0; i < keywords.length; i++) hash += hashCode(keywords[i]);
         let program = this.programs[hash];
@@ -197,24 +252,30 @@ function SplashCursor({
         this.uniforms = getUniforms(program);
         this.activeProgram = program;
       }
+      
       bind() {
         gl.useProgram(this.activeProgram);
       }
     }
 
     class Program {
-      constructor(vertexShader, fragmentShader) {
+      uniforms: Record<string, any>;
+      program: any;
+      
+      constructor(vertexShader: any, fragmentShader: any) {
         this.uniforms = {};
         this.program = createProgram(vertexShader, fragmentShader);
         this.uniforms = getUniforms(this.program);
       }
+      
       bind() {
         gl.useProgram(this.program);
       }
     }
 
-    function createProgram(vertexShader, fragmentShader) {
+    function createProgram(vertexShader: any, fragmentShader: any) {
       let program = gl.createProgram();
+      if (!program) return null;
       gl.attachShader(program, vertexShader);
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
@@ -223,19 +284,23 @@ function SplashCursor({
       return program;
     }
 
-    function getUniforms(program) {
-      let uniforms = [];
+    function getUniforms(program: any) {
+      let uniforms: Record<string, any> = {};
       let uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
       for (let i = 0; i < uniformCount; i++) {
-        let uniformName = gl.getActiveUniform(program, i).name;
-        uniforms[uniformName] = gl.getUniformLocation(program, uniformName);
+        const uniformInfo = gl.getActiveUniform(program, i);
+        if (uniformInfo) {
+          let uniformName = uniformInfo.name;
+          uniforms[uniformName] = gl.getUniformLocation(program, uniformName);
+        }
       }
       return uniforms;
     }
 
-    function compileShader(type, source, keywords) {
+    function compileShader(type: number, source: string, keywords?: string[]) {
       source = addKeywords(source, keywords);
       const shader = gl.createShader(type);
+      if (!shader) return null;
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
@@ -243,7 +308,7 @@ function SplashCursor({
       return shader;
     }
 
-    function addKeywords(source, keywords) {
+    function addKeywords(source: string, keywords?: string[]) {
       if (!keywords) return source;
       let keywordsString = "";
       keywords.forEach((keyword) => {

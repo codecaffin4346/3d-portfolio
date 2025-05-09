@@ -2,9 +2,15 @@
 import { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Environment, Float, Text } from '@react-three/drei';
-import { Group, MeshStandardMaterial } from 'three';
+import { Group } from 'three';
+import { MeshProps } from '@react-three/fiber';
 
-function Model({ position = [0, 0, 0], rotation = [0, 0, 0] }) {
+interface ModelProps {
+  position?: [number, number, number];
+  rotation?: [number, number, number];
+}
+
+function Model({ position = [0, 0, 0], rotation = [0, 0, 0] }: ModelProps) {
   const group = useRef<Group>(null);
   
   // Animation for the model
