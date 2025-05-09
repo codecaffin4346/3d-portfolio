@@ -4,38 +4,40 @@ import { Navigation } from "@/components/Navigation";
 import { ThreeDScene } from "@/components/ThreeDScene";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Code, Mail, User } from "lucide-react";
+import { ArrowRight, Code, Download, Mail, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const projects = [
   {
-    title: "E-commerce Platform",
-    description: "A modern e-commerce platform built with React and Node.js",
-    technologies: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    liveUrl: "#",
-    githubUrl: "#",
+    title: "MediSure",
+    description: "A smart solution that predicts rural health insurance eligibility, bridging the gap between government policies and underserved communities.",
+    technologies: ["Machine Learning", "Python", "Data Analysis"],
+    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    liveUrl: "https://med-suree.vercel.app/",
+    githubUrl: "https://github.com/codecaffin4346",
   },
   {
-    title: "Weather Dashboard",
-    description: "Real-time weather application with interactive maps",
-    technologies: ["React", "OpenWeatherAPI", "ChartJS", "Leaflet"],
-    image: "https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    liveUrl: "#",
-    githubUrl: "#",
+    title: "EcoVista",
+    description: "An intelligent waste management platform designed to promote sustainable living through data-driven insights and eco-friendly initiatives.",
+    technologies: ["AI", "Python", "React"],
+    image: "https://images.unsplash.com/photo-1550305080-4e029753abcf?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    liveUrl: "https://ecoawareness-hub.lovable.app/report",
+    githubUrl: "https://github.com/codecaffin4346",
   },
   {
-    title: "Task Management App",
-    description: "Collaborative project management tool with real-time updates",
-    technologies: ["TypeScript", "Firebase", "React", "Redux"],
-    image: "https://images.unsplash.com/photo-1611224885990-ab7363d7f2a9?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-    liveUrl: "#",
-    githubUrl: "#",
+    title: "Virgo",
+    description: "AI-powered women career development platform helping women navigate their professional journey with personalized guidance.",
+    technologies: ["Machine Learning", "NLP", "React"],
+    image: "https://images.unsplash.com/photo-1571501679680-de32f1e7aad4?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+    liveUrl: "https://preview--career-empowerment-haven.lovable.app/",
+    githubUrl: "https://github.com/codecaffin4346",
   },
 ];
 
 const skills = [
-  "ReactJS", "ThreeJS", "TypeScript", "Node.js", "TailwindCSS", 
-  "WebGL", "MongoDB", "Next.js", "GraphQL", "CSS/SCSS",
+  "Machine Learning", "Deep Learning", "Natural Language Processing", 
+  "Computer Vision", "Python", "TensorFlow", "PyTorch", "Data Analysis", 
+  "Neural Networks", "Scikit-Learn",
 ];
 
 const Index = () => {
@@ -56,11 +58,13 @@ const Index = () => {
           <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div className="max-w-xl space-y-6 animate-fade-in">
               <h1 className="text-4xl md:text-6xl font-bold">
-                Creative <span className="text-neon-purple">Developer</span> & <br />
-                3D Enthusiast
+                Nishi <span className="text-neon-purple">Agrawal</span>
               </h1>
+              <p className="text-2xl font-semibold text-muted-foreground">
+                Navigating the Constellations of Machine Learning
+              </p>
               <p className="text-muted-foreground text-lg">
-                I build interactive experiences and digital solutions that combine creativity with technical excellence.
+                A Machine Learning enthusiast focused on building intelligent systems that solve real-world problems.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button className="bg-neon-purple hover:bg-neon-purple/80 text-white">
@@ -71,8 +75,17 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            <div className="h-[30vh] md:h-[50vh] lg:h-[60vh] w-full">
-              <ThreeDScene />
+            <div className="flex justify-center items-center">
+              <div className="relative">
+                <div className="absolute inset-0 bg-neon-purple/20 rounded-full blur-2xl"></div>
+                <Avatar className="h-64 w-64 rounded-full border-4 border-neon-purple shadow-lg shadow-neon-purple/20">
+                  <AvatarImage src="/lovable-uploads/4e3f568a-9858-419f-b200-1820e76b32ce.png" alt="Nishi Agrawal" className="object-cover" />
+                  <AvatarFallback className="text-4xl">NA</AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="h-[30vh] md:h-[50vh] lg:h-[60vh] w-full absolute opacity-40 pointer-events-none">
+                <ThreeDScene />
+              </div>
             </div>
           </div>
         </section>
@@ -94,10 +107,10 @@ const Index = () => {
                   <h3 className="text-xl font-bold">Who I Am</h3>
                 </div>
                 <p className="text-muted-foreground leading-relaxed">
-                  I'm a creative developer passionate about building immersive digital experiences. With expertise in both frontend development and 3D graphics, I create websites and applications that stand out from the crowd.
+                  I'm a passionate Machine Learning enthusiast dedicated to building intelligent systems that solve real-world problems. My expertise spans across various domains of artificial intelligence, with a focus on creating impactful solutions.
                 </p>
                 <p className="text-muted-foreground leading-relaxed">
-                  When I'm not coding, you can find me experimenting with WebGL shaders, contributing to open-source projects, or exploring the latest in web technologies.
+                  When I'm not coding or training models, I'm exploring the latest advancements in AI research and looking for opportunities to apply cutting-edge technology to practical challenges.
                 </p>
               </div>
               
@@ -130,7 +143,7 @@ const Index = () => {
               <h2 className="text-3xl font-bold mb-3">Featured Projects</h2>
               <div className="w-16 h-1 bg-neon-purple rounded"></div>
               <p className="mt-4 text-center text-muted-foreground max-w-xl">
-                Take a look at some of my recent work. Each project showcases different skills and technologies I've mastered.
+                Take a look at some of my recent work. Each project showcases different skills and technologies in machine learning and AI.
               </p>
             </div>
             
@@ -139,23 +152,31 @@ const Index = () => {
                 <ProjectCard key={index} {...project} />
               ))}
             </div>
-            
-            <div className="mt-12 flex justify-center">
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10">
-                View All Projects <ArrowRight className="ml-2 h-4 w-4" />
+          </div>
+        </section>
+
+        {/* Resume Section */}
+        <section id="resume" className="section bg-black/20 relative py-16">
+          <div className="container mx-auto">
+            <div className="flex flex-col items-center">
+              <h2 className="text-3xl font-bold mb-3">Resume</h2>
+              <div className="w-16 h-1 bg-neon-purple rounded mb-8"></div>
+              
+              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 px-8 py-6 text-lg">
+                <Download className="mr-2 h-5 w-5" /> Download Resume
               </Button>
             </div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="section bg-black/20 relative">
+        <section id="contact" className="section relative">
           <div className="container mx-auto">
             <div className="flex flex-col items-center mb-12">
               <h2 className="text-3xl font-bold mb-3">Get In Touch</h2>
               <div className="w-16 h-1 bg-neon-purple rounded"></div>
               <p className="mt-4 text-center text-muted-foreground max-w-xl">
-                Have a project in mind or just want to connect? Feel free to reach out!
+                Have a project in mind or want to collaborate? Feel free to reach out!
               </p>
             </div>
             
@@ -221,17 +242,17 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-muted-foreground text-sm">
-                © {new Date().getFullYear()} - All rights reserved
+                © {new Date().getFullYear()} - Nishi Agrawal | All rights reserved
               </p>
               <div className="flex gap-4 mt-4 md:mt-0">
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="https://github.com/codecaffin4346" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                   GitHub
                 </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <a href="https://www.linkedin.com/in/nishi-agrawal-151618283/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors">
                   LinkedIn
                 </a>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Twitter
+                <a href="mailto:workwithnishi51@gmail.com" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Email
                 </a>
               </div>
             </div>

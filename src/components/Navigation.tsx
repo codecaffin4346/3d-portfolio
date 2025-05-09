@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu } from 'lucide-react';
+import { Download, Menu } from 'lucide-react';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +10,7 @@ export function Navigation() {
     { name: "Home", href: "#home" },
     { name: "About", href: "#about" },
     { name: "Projects", href: "#projects" },
+    { name: "Resume", href: "#resume" },
     { name: "Contact", href: "#contact" },
   ];
 
@@ -18,7 +19,7 @@ export function Navigation() {
       <div className="container mx-auto py-4 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="text-lg font-bold bg-gradient-to-r from-neon-purple to-light-purple text-transparent bg-clip-text">
-            Portfolio
+            Nishi Agrawal
           </span>
         </div>
         
@@ -44,7 +45,7 @@ export function Navigation() {
             </a>
           ))}
           <Button className="bg-neon-purple hover:bg-neon-purple/80">
-            Download CV
+            <Download className="mr-2 h-4 w-4" /> Resume
           </Button>
         </nav>
 
@@ -63,7 +64,7 @@ export function Navigation() {
                 </a>
               ))}
               <Button className="mt-2 bg-neon-purple hover:bg-neon-purple/80">
-                Download CV
+                <Download className="mr-2 h-4 w-4" /> Resume
               </Button>
             </nav>
           </div>
