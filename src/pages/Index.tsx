@@ -68,22 +68,22 @@ const Index = () => {
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button className="bg-neon-purple hover:bg-neon-purple/80 text-white">
-                  View Projects <ArrowRight className="ml-2 h-4 w-4" />
+                  <a href="#projects">View Projects</a> <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
                 <Button variant="outline">
-                  Contact Me
+                  <a href="#contact">Contact Me</a>
                 </Button>
               </div>
             </div>
             <div className="flex justify-center items-center">
-              <div className="relative">
+              <div className="relative z-10">
                 <div className="absolute inset-0 bg-neon-purple/20 rounded-full blur-2xl"></div>
-                <Avatar className="h-64 w-64 rounded-full border-4 border-neon-purple shadow-lg shadow-neon-purple/20">
+                <Avatar className="h-64 w-64 rounded-full border-4 border-neon-purple shadow-lg shadow-neon-purple/20 relative">
                   <AvatarImage src="/lovable-uploads/4e3f568a-9858-419f-b200-1820e76b32ce.png" alt="Nishi Agrawal" className="object-cover" />
                   <AvatarFallback className="text-4xl">NA</AvatarFallback>
                 </Avatar>
               </div>
-              <div className="h-[30vh] md:h-[50vh] lg:h-[60vh] w-full absolute opacity-40 pointer-events-none">
+              <div className="h-[30vh] md:h-[50vh] lg:h-[60vh] w-full absolute opacity-40 pointer-events-none z-0">
                 <ThreeDScene />
               </div>
             </div>
@@ -162,8 +162,10 @@ const Index = () => {
               <h2 className="text-3xl font-bold mb-3">Resume</h2>
               <div className="w-16 h-1 bg-neon-purple rounded mb-8"></div>
               
-              <Button variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 px-8 py-6 text-lg">
-                <Download className="mr-2 h-5 w-5" /> Download Resume
+              <Button asChild variant="outline" className="border-neon-purple text-neon-purple hover:bg-neon-purple/10 px-8 py-6 text-lg">
+                <a href="https://drive.google.com/file/d/1R57B4A_97dsDl8VcwJF0X2XBEfE4Dyxl/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+                  <Download className="mr-2 h-5 w-5" /> Download Resume
+                </a>
               </Button>
             </div>
           </div>

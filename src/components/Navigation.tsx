@@ -44,8 +44,10 @@ export function Navigation() {
               {item.name}
             </a>
           ))}
-          <Button className="bg-neon-purple hover:bg-neon-purple/80">
-            <Download className="mr-2 h-4 w-4" /> Resume
+          <Button asChild className="bg-neon-purple hover:bg-neon-purple/80">
+            <a href="https://drive.google.com/file/d/1R57B4A_97dsDl8VcwJF0X2XBEfE4Dyxl/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+              <Download className="mr-2 h-4 w-4" /> Resume
+            </a>
           </Button>
         </nav>
 
@@ -63,8 +65,10 @@ export function Navigation() {
                   {item.name}
                 </a>
               ))}
-              <Button className="mt-2 bg-neon-purple hover:bg-neon-purple/80">
-                <Download className="mr-2 h-4 w-4" /> Resume
+              <Button asChild className="mt-2 bg-neon-purple hover:bg-neon-purple/80">
+                <a href="https://drive.google.com/file/d/1R57B4A_97dsDl8VcwJF0X2XBEfE4Dyxl/view?usp=sharing" target="_blank" rel="noopener noreferrer">
+                  <Download className="mr-2 h-4 w-4" /> Resume
+                </a>
               </Button>
             </nav>
           </div>
